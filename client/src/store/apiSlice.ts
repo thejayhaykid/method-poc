@@ -41,7 +41,8 @@ function formatApiError(body: ApiErrorBody): string {
 const axiosInstance = axios.create({ baseURL: '/api' });
 
 const axiosBaseQuery: BaseQueryFn<
-  string | { url: string; method?: AxiosRequestConfig['method']; body?: unknown },
+  | string
+  | { url: string; method?: AxiosRequestConfig['method']; body?: unknown },
   unknown,
   ApiError
 > = async (args) => {
@@ -120,21 +121,35 @@ export const apiSlice = createApi({
       ],
     }),
 
-    createVerificationSession: builder.mutation<IEntityVerificationSession, CreateVerificationPayload>({
+    createVerificationSession: builder.mutation<
+      IEntityVerificationSession,
+      CreateVerificationPayload
+    >({
       query: (body) => ({ url: '/verification', method: 'POST', body }),
       invalidatesTags: (_result, _err, arg) => [
         { type: 'MethodEntity', id: arg.entity_id },
       ],
     }),
 
-    updateVerificationSession: builder.mutation<IEntityVerificationSession, UpdateVerificationPayload>({
+    updateVerificationSession: builder.mutation<
+      IEntityVerificationSession,
+      UpdateVerificationPayload
+    >({
       query: (body) => ({ url: '/verification/update', method: 'POST', body }),
       invalidatesTags: (_result, _err, arg) => [
         { type: 'MethodEntity', id: arg.entity_id },
       ],
     }),
 
-    createConnect: builder.mutation<{ id: string; entity_id: string; status: string; accounts: string[] | null }, string>({
+    createConnect: builder.mutation<
+      {
+        id: string;
+        entity_id: string;
+        status: string;
+        accounts: string[] | null;
+      },
+      string
+    >({
       query: (methodId) => ({
         url: `/entities/method/${methodId}/connect`,
         method: 'POST',
